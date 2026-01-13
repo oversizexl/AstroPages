@@ -1,119 +1,141 @@
 ---
-title: AstroPages 项目完整部署指南
+title: 如何用 AstroPages-Bilingual 模板快速搭建双语博客（Cloudflare Pages + Keystatic CMS 完整教程）
 pubDatetime: 2026-01-13
-description: 创建博客步骤
+description: 从 Fork 仓库到上线后台编辑，一步步带你部署一个免费、高性能的双语 Astro 博客，还能在线用 Keystatic 管理内容。亲测超坑的点都标注了！
 draft: false
-featured: true
-tags: []
+featured: false
+tags:
+  - Astro
+  - Keystatic
+  - Cloudflare Pages
+  - 双语博客
 ---
-# AstroPages 项目完整部署指南（Cloudflare Pages + Keystatic CMS）
+大家好，我是 Sherlock。
 
-目标：把 Fork 的 Astro 双语博客部署到 Cloudflare Pages，并启用 Keystatic CMS 在线编辑内容（`/keystatic` 后台）。
+最近想自己搭一个支持中英双语的个人博客，选来选去最后落在了 AstroPages-Bilingual 这个模板上（原仓库：https://github.com/t0saki/AstroPages-Bilingual）。
 
-## 第一步：Fork 并准备仓库
+它用 Astro 5 + Keystatic CMS + Cloudflare Pages 部署，速度快、免费、内容直接存 GitHub，超级适合个人玩家。
 
-1. 打开原仓库 → **Fork** 到你自己的 GitHub 账号下\
-   （推荐：改仓库名为 `your-username-blog` 之类，便于管理）
+整个过程我踩了不少坑（尤其是第一次没选 Astro 框架导致空白页），现在写下来分享给大家。跟着做基本 30 分钟就能上线，还能在线编辑文章。走起！
 
-## 第二步：Cloudflare Pages 部署前端
+\### 1. 先 Fork 模板仓库
 
-1. 登录 [Cloudflare Dashboard](https://dash.cloudflare.com)\
-   → **Workers & Pages** → **创建应用程序** → **Pages** → **Get Started** → **Connect to Git**
+直接点这个链接 Fork：
 
-1. 选择你刚刚 Fork 的仓库 → **Begin setup**
+https://github.com/t0saki/AstroPages-Bilingual
 
-1. **构建设置（Build Settings）** —— **这一步最关键！**
+Fork 后建议改个名字，比如 `sherlock-blog` 什么的，方便记忆。
 
-   {% table %}
-   - 设置项
-   - 推荐值
-   - 说明 / 注意事项
-   ---
-   - Framework Preset
-   - Astro
-   - **必须选这个！** 没选会直接 404 / No content found（你之前踩过的坑）
-   ---
-   - Build command
-   - `npm run build`
-   - 默认即可（项目 package.json 已定义）
-   ---
-   - Build output directory
-   - `dist`
-   - Astro 默认输出目录
-   ---
-   - Environment variables
-   - （暂不填，后面加）
-   - —
-   {% /table %}
+\### 2. 上 Cloudflare Pages 部署前端（最关键的一步！）
 
-1. 点击 **Save and Deploy**\
-   → 等 1–3 分钟，部署成功后得到链接：`https://your-project-name.pages.dev`\
-   → 打开链接看到前端页面（首页/文章列表）即成功！
+1. 打开 Cloudflare Dashboard：https://dash.cloudflare.com
 
-### 小提示
+   → 左侧菜单选 Workers & Pages
 
-- 第一次部署失败？查看 **Deployments** → 点最新一次 → Build logs，看报错（常见：没选 Astro、Node 版本不对）。
-- 想用自己的域名？后面再绑（第六步）。
+   → 点击 Create application → Pages → Get Started
 
-## 第三步：创建 GitHub App（用于 Keystatic 授权）
+1. 选 Connect to Git，授权你的 GitHub，然后找到你 Fork 的仓库，点 Begin setup。
 
-1. 前往 [GitHub Settings → Developer settings → GitHub Apps → New GitHub App](https://github.com/settings/apps/new)
-1. 填写信息（用你自己的站点替换）：
-   - **GitHub App name**：建议 `your-username-keystatic`（唯一即可）
-   - **Homepage URL**：`https://your-project.pages.dev`（或已绑定的自定义域名）
-   - **Callback URL**：`https://your-project.pages.dev/api/keystatic/github/oauth/callback`\
-     （**必须加这个**，否则登录报 redirect_uri 错误）
-   - **Webhook**：**取消勾选**（不需要）
-1. **Repository permissions**：
-   - Contents → **Read & Write**（必须！）
-   - Metadata → **Read-only**（默认）
-1. 点击 **Create GitHub App**\
-   → 立即复制：
-   - **Client ID**
-   - 生成并复制 **Client Secret**（只显示一次，记好！）
-1. **安装 App**：
-   - 页面左边 → **Install App** → 选择你 Fork 的仓库 → **Install**
+1. 构建设置（Build Settings） ← 这里超级重要，我第一次没注意，直接空白页了！
 
-## 第四步：Cloudflare 添加环境变量（激活 Keystatic）
+   - Framework Preset：一定要选 Astro！（默认是 No framework，会导致没前端页面，404 或白屏）      - Build Command：保持默认 npm run build      - Output Directory：保持默认 dist
 
-1. Cloudflare Dashboard → 你的 Pages 项目 → **Settings** → **Environment variables** → **Add variable**
+1. 点 Save and Deploy，等 1-3 分钟。
 
-1. 添加以下三个（**全部 Production**）：
+   成功后会给你一个链接：https://xxxx.pages.dev
 
-   {% table %}
-   - 变量名
-   - 值示例 / 说明
-   ---
-   - KEYSTATIC_GITHUB_CLIENT_ID
-   - 从上步复制的 Client ID
-   ---
-   - KEYSTATIC_GITHUB_CLIENT_SECRET
-   - 从上步复制的 Client Secret
-   ---
-   - KEYSTATIC_SECRET
-   - **必须是 64+ 位随机字符串**！推荐用工具生成：<br>• https://keystatic-deploy-test.netlify.app/generate-keystatic-secret/<br>• 或命令 `npx @keystatic/generate-secret`
-   {% /table %}
+   打开看一眼，如果首页和文章列表正常出现，就成功啦！
 
-   **KEYSTATIC\_SECRET 警告**：\
-   如果只填 `sherlock`、`123456` 等短/弱密码 → 会报认证错误或安全隐患！必须随机长串。
+\**小贴士*\*：
 
-1. 保存后 → **立即重新部署**（点 Deployments → Redeploy 或 push 一个空 commit）
+- 部署失败了？去 Deployments 里点最新那次，看 Build logs，常见错误就是没选 Astro。
 
-## 第五步：测试 Keystatic 后台
+- 想用自己的域名？可以现在跳到最后一步绑定，后面再回来。
 
-1. 打开 `https://your-project.pages.dev/keystatic`\
-   （或自定义域名 `/keystatic`）
-1. 点击 **Login with GitHub** → 授权 → 成功进入后台\
-   → 现在你可以在线创建/编辑文章、上传图片了（图片会 commit 到仓库）。
+\### 3. 设置 GitHub App，让 Keystatic 能在线编辑
 
-## 第六步：（可选）绑定自定义域名
+Keystatic 是这个模板的亮点，它让内容管理像 WordPress 一样简单，但数据直接存 GitHub。
 
-1. Pages 项目 → **Custom domains** → **Set up a domain**
-1. 输入你的域名（需已加到 Cloudflare DNS）
-1. 等 DNS 状态变为 **Active**
-1. 验证：浏览器打开你的域名 → 看到站点即成功
+1. 去 GitHub 创建 App：https://github.com/settings/apps/new
 
----
+1. 填写信息（替换成你自己的）：
 
-祝部署顺利！\
-部署完成后，欢迎把你的站点链接分享出来，一起看看效果～
+   - GitHub App name：随便填，比如 sherlock-keystatic（唯一就行）
+
+   - Homepage URL：你的站点地址，比如 https://your-site.pages.dev（或自定义域名）
+
+   - Callback URL：必须填 https://your-site.pages.dev/api/keystatic/github/oauth/callback（漏了会报 redirect 错误！）
+
+   - Webhook：取消勾选，不需要
+
+1. Repository permissions：
+
+   - 点 Repository permissions
+
+   - Contents → 选 Read & Write（必须！）
+
+   - Metadata → 默认 Read-only 就好
+
+1. 拉到底，点 Create GitHub App
+
+   → 复制 Client ID
+
+   → 生成并复制 Client Secret（只显示一次，保存好！）
+
+1. 左侧菜单点 Install App → 选你的 Fork 仓库 → Install。
+
+\### 4. 在 Cloudflare 加环境变量（激活后台）
+
+回到 Cloudflare Pages 项目：
+
+1. → Settings → Environment variables → Add variable
+
+1. 加这三个（选 Production）：
+
+   - KEYSTATIC_GITHUB_CLIENT_ID：粘贴 Client ID
+
+   - KEYSTATIC_GITHUB_CLIENT_SECRET：粘贴 Client Secret
+
+   - KEYSTATIC_SECRET：随机长字符串！推荐 64 位以上
+
+     可以去这个工具在线生成：https://tools.nb.uy/token-generator
+
+     或者终端跑 npx @keystatic/generate-secret
+
+     **警告**：别用 123456、sherlock 这种弱密码，会认证失败或不安全！
+
+1. 加完点 Save → 去 Deployments → 手动 Redeploy（或 push 个空 commit 触发）。
+
+\### 5. 测试后台登录
+
+部署完后，打开：
+
+https://your-site.pages.dev/keystatic   （或你的自定义域名 + /keystatic）
+
+点 Login with GitHub → 授权 → 成功进入后台！
+
+现在你可以在线写文章、上传图片了，所有改动都会自动 commit 到 GitHub。
+
+\### 6. （可选）绑定自己的域名
+
+1. Pages 项目 → Custom domains → Set up a domain
+
+1. 输入你的域名（提前加到 Cloudflare DNS）
+
+1. 等状态变成 Active
+
+1. 浏览器打开域名测试一下，OK 就大功告成！
+
+\### 小结 & 我的心得
+
+整个流程其实不难，关键坑就两个：
+
+- 构建设置必须选 Astro（不然白屏）
+
+- KEYSTATIC_SECRET 一定要够长随机（弱密码会报错）
+
+上线后站点速度飞起（Astro SSG + Cloudflare 边缘缓存），内容管理也方便。推荐大家试试！
+
+有问题欢迎评论区留言，或者去原仓库提 issue。祝你也快速搭好自己的双语小窝～
+
+（完）

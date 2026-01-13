@@ -1,7 +1,7 @@
 ---
 title: 记录一次完整搭建博客的过程
 pubDatetime: 2026-01-13
-description: Create Blog Step
+description: 创建博客步骤
 draft: false
 featured: true
 tags: []

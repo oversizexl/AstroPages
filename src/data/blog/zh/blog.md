@@ -2,7 +2,7 @@
 title: AstroPages 项目完整部署指南
 pubDatetime: 2026-01-13
 description: 创建博客步骤
-draft: true
+draft: false
 featured: true
 tags: []
 ---

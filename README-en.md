@@ -12,7 +12,7 @@ Based on the [astro-paper](https://github.com/satnaing/astro-paper) theme, refac
 
 ## ✨ Features
 
-- **Astro v5 Native i18n**: Fully routed `/[lang]/` structure (e.g., `/zh/`, `/en/`) with zero-config redirection.
+- **Astro v5 Native i18n**: Full routing structure with Chinese at root `/` and English at `/en/`, with zero-config redirection.
 - **Hybrid Rendering**: Static pages for visitors (SSG), dynamic routes for CMS admin (SSR).
 - **Keystatic CMS**: Git-based Headless CMS. No database required. content lives in your repo.
 - **Cloudflare Pages**: Ready-to-deploy configuration with automated builds.
@@ -45,7 +45,7 @@ Start the development server:
 npm run dev
 ```
 
-- **Blog**: Visit `http://localhost:4321/` (Redirects to `/zh/`)
+- **Blog**: Visit `http://localhost:4321/` (Chinese homepage) or `http://localhost:4321/en/` (English homepage)
 - **CMS**: Visit `http://localhost:4321/keystatic` to manage content locally.
 
 ## ☁️ Deployment
@@ -60,10 +60,11 @@ npm run dev
     -   **Build Command**: `npm run build` (default)
     -   **Output Directory**: `dist` (default)
 5.  Click **Save and Deploy**.
+6.  **Note**: After deployment, it is recommended to **disable Rocket Loader** in Cloudflare Dashboard under **Speed > Optimization**. Rocket Loader interferes with Astro's Client Router (View Transitions), causing issues with page navigation and script execution.
 
 ### Configure Production CMS (GitHub Mode)
 
-To edit content on the live site (`/keystatic`), you need to connect Keystatic to GitHub.
+To edit content on the live site (`/keystatic`), you need to connect Keystatic to GitHub. If you prefer to manage content directly through GitHub instead of using a separate Keystatic admin interface, you can skip this step, and the website should already be functional.
 
 1.  **Create a GitHub App**:
     -   Go to [GitHub Developer Settings](https://github.com/settings/apps) > New GitHub App.

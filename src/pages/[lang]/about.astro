@@ -4,16 +4,15 @@ import Footer from "@/components/Footer.astro";
 import Breadcrumb from "@/components/Breadcrumb.astro";
 import Layout from "@/layouts/Layout.astro";
 import { SITE } from "@/config";
-import { useTranslations, type Lang } from "@/i18n/ui";
+import { getLangFromUrl } from "@/i18n/ui";
 
 export function getStaticPaths() {
   return [
-    { params: { lang: "zh" } },
     { params: { lang: "en" } },
   ];
 }
 
-const { lang } = Astro.params as { lang: Lang };
+const lang = getLangFromUrl(Astro.url);
 
 
 // Bilingual content

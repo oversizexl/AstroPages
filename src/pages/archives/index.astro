@@ -7,29 +7,25 @@ import Footer from "@/components/Footer.astro";
 import Card from "@/components/Card.astro";
 import getPostsByGroupCondition from "@/utils/getPostsByGroupCondition";
 import { SITE } from "@/config";
-import { useTranslations, type Lang, type TranslationKey, getLangFromUrl } from "@/i18n/ui";
+import { useTranslations, type Lang, type TranslationKey } from "@/i18n/ui";
 
 // Redirect to 404 page if `showArchives` config is false
 if (!SITE.showArchives) {
   return Astro.redirect("/404");
 }
 
-export function getStaticPaths() {
-  return [
-    { params: { lang: "en" } },
-  ];
-}
+// Hardcoded to Chinese for root path
+const lang: Lang = "zh";
 
-const lang = getLangFromUrl(Astro.url);
 const allPosts = await getCollection("blog", ({ data }) => !data.draft);
-const posts = allPosts.filter(({ id }) => id.startsWith(`${lang}/`));
+const posts = allPosts.filter(({ id }) => id.startsWith("zh/"));
 const t = useTranslations(lang);
 
 ---
 
 <Layout title={`${t("nav.archives")} | ${SITE.title}`}>
-  <Header lang={lang as Lang} />
-  <Main pageTitle={t("nav.archives")} pageDesc={t("nav.archivesDesc")} lang={lang as Lang}>
+  <Header lang={lang} />
+  <Main pageTitle={t("nav.archives")} pageDesc={t("nav.archivesDesc")} lang={lang}>
     {
       Object.entries(
         getPostsByGroupCondition(posts, post =>
@@ -75,5 +71,5 @@ const t = useTranslations(lang);
         ))
     }
   </Main>
-  <Footer lang={lang as Lang} />
+  <Footer lang={lang} />
 </Layout>

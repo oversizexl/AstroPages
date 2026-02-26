@@ -12,6 +12,7 @@ export default config({
       : {
           kind: 'local',
         },
+
   collections: {
     posts_zh: collection({
       label: '中文博客',
@@ -26,17 +27,23 @@ export default config({
         featured: fields.checkbox({ label: '推荐文章', defaultValue: false }),
         tags: fields.array(
           fields.text({ label: '标签' }),
-          { 
+          {
             label: '标签',
             itemLabel: props => props.value
           }
         ),
-        content: fields.markdoc({ 
+        coverImage: fields.image({
+          label: '封面图片',
+          directory: 'src/data/blog/zh',      // 图片存放在文章同级目录
+          publicPath: './',                    // 生成相对路径 ./xxx.jpg，Astro 能解析
+        }),
+        content: fields.markdoc({
           label: '正文',
           extension: 'md'
         }),
       },
     }),
+
     posts_en: collection({
       label: 'English Posts',
       slugField: 'title',
@@ -50,20 +57,17 @@ export default config({
         featured: fields.checkbox({ label: 'Featured', defaultValue: false }),
         tags: fields.array(
           fields.text({ label: 'Tags' }),
-          { 
+          {
             label: 'Tags',
             itemLabel: props => props.value
           }
         ),
-        overImage: fields.image({
-        label: 'Cover Image',
-        directory: 'src/data/blog/en',  // 或 'src/assets/images/blog/en' 如果想统一放
-        publicPath: '/data/blog/en/',   // 构建时 Astro 会从 public/ 或根路径解析
-      // 如果用 path alias（推荐）：
-      // directory: 'src/assets/images/posts',
-      // publicPath: '/src/assets/images/posts/',
-    }),
-        content: fields.markdoc({ 
+        coverImage: fields.image({
+          label: 'Cover Image',
+          directory: 'src/data/blog/en',      // 图片存放在文章同级目录
+          publicPath: './',                    // 生成相对路径 ./xxx.jpg，Astro 能解析
+        }),
+        content: fields.markdoc({
           label: 'Content',
           extension: 'md'
         }),

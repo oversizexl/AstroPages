@@ -6,4 +6,4 @@ draft: false
 featured: false
 tags: []
 ---
-![](image.png)
+![](Mario.jpg)

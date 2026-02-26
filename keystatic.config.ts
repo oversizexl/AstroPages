@@ -55,6 +55,14 @@ export default config({
             itemLabel: props => props.value
           }
         ),
+        overImage: fields.image({
+        label: 'Cover Image',
+        directory: 'src/data/blog/en',  // 或 'src/assets/images/blog/en' 如果想统一放
+        publicPath: '/data/blog/en/',   // 构建时 Astro 会从 public/ 或根路径解析
+      // 如果用 path alias（推荐）：
+      // directory: 'src/assets/images/posts',
+      // publicPath: '/src/assets/images/posts/',
+    }),
         content: fields.markdoc({ 
           label: 'Content',
           extension: 'md'

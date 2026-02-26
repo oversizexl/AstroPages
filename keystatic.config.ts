@@ -1,7 +1,6 @@
 // @ts-check
 /// <reference types="astro/client" />
 import { config, fields, collection } from '@keystatic/core';
-
 export default config({
   storage:
     process.env.NODE_ENV === 'production' || import.meta.env?.PROD
@@ -12,7 +11,6 @@ export default config({
       : {
           kind: 'local',
         },
-
   collections: {
     posts_zh: collection({
       label: '中文博客',
@@ -32,18 +30,12 @@ export default config({
             itemLabel: props => props.value
           }
         ),
-        coverImage: fields.image({
-          label: '封面图片',
-          directory: 'src/data/blog/zh',      // 图片存放在文章同级目录
-          publicPath: './',                    // 生成相对路径 ./xxx.jpg，Astro 能解析
-        }),
         content: fields.markdoc({
           label: '正文',
           extension: 'md'
         }),
       },
     }),
-
     posts_en: collection({
       label: 'English Posts',
       slugField: 'title',
@@ -62,11 +54,6 @@ export default config({
             itemLabel: props => props.value
           }
         ),
-        coverImage: fields.image({
-          label: 'Cover Image',
-          directory: 'src/data/blog/en',      // 图片存放在文章同级目录
-          publicPath: './',                    // 生成相对路径 ./xxx.jpg，Astro 能解析
-        }),
         content: fields.markdoc({
           label: 'Content',
           extension: 'md'
